@@ -6,16 +6,15 @@ import Appointment from '../models/Appointment';
 
 class ScheduleController {
   async index(req, res) {
-
     const checkUserProvider = await User.findOne({
       where: {
         id: req.userId,
-        provider: true
-      }
+        provider: true,
+      },
     });
 
-    if(!checkUserProvider) {
-      return req.status(401).json({ error: 'Uset is not a provider'})
+    if (!checkUserProvider) {
+      return req.status(401).json({ error: 'Uset is not a provider' });
     }
 
     const { date } = req.query;
@@ -26,15 +25,11 @@ class ScheduleController {
         provider_id: req.userId,
         canceled_at: null,
         date: {
-          [Op.between]: [
-            startOfDay(parsedDate),
-            endOfDay(parsedDate),
-          ]
+          [Op.between]: [startOfDay(parsedDate), endOfDay(parsedDate)],
         },
-        
       },
       order: ['date'],
-      attributes: ['date', 'canceled_at', 'user_id', 'provider_id']
+      attributes: ['date', 'canceled_at', 'user_id', 'provider_id'],
     });
 
     return res.json(appointment);
